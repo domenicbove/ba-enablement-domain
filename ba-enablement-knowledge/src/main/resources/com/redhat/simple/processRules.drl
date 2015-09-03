@@ -108,7 +108,7 @@ rule "Enrich"
 	dialect "mvel"
 	when
 		$business: Business($federalTaxId : federalTaxId, $zipCode : zipCode)
-		$federalTaxId.length < 5
+		//$federalTaxId.length < 5
 	then
 		$business.setFederalTaxId($federalTaxId + "-" + $zipCode)
 		System.out.println("enriched")
