@@ -7,9 +7,3 @@ query "Get Business"
 	$business : Business()
 	
 end
-
-query "Get Reason"
-	
-	$reason : Reason()
-	
-end

@@ -1,15 +1,12 @@
 package com.redhat;
 
-import java.util.Collection;
-
 public class RuleResponse {
 
 	@KieQuery(binding = "$business", queryName = "Get Business")
 	private Business business;
 	
-	private String responseCode; // e.g. success, failure, filtered, validation error...
-	
-	private Collection<Reason> reasons; // messages about why the response Code came bacl
+	@KieQuery(binding = "$reason", queryName = "Get Reason")
+	private Reason reasons; // messages about why the response Code came bacl
 
 	public Business getBusiness() {
 		return business;
@@ -17,6 +14,14 @@ public class RuleResponse {
 
 	public void setBusiness(Business business) {
 		this.business = business;
+	}
+
+	public Reason getReasons() {
+		return reasons;
+	}
+
+	public void setReasons(Reason reasons) {
+		this.reasons = reasons;
 	}
 
 }

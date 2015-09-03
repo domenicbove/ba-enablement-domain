@@ -1,0 +1,116 @@
+package com.redhat;
+
+rule "Filter Kansas"
+ruleflow-group "filter"
+dialect "mvel"
+
+	when
+		$business : Business(stateCode == "KS")
+	then
+		$reason = new Reason("business from kansas", "filtered");
+		insert($reason);
+		System.out.println( "Filtering out Kansas Businesses" );
+end
+
+rule "Empty name field for Business"
+	ruleflow-group "validate"
+	dialect "mvel"
+
+	when	
+		$business : Business(name == "" || name == null)
+	then
+		$reason = new Reason("missing name", "validation error");
+		insert($reason);
+		System.out.println( "Empty business name field error");
+end
+
+rule "Missing addressLine1"
+	ruleflow-group "validate"
+	dialect "mvel"
+	when
+		$business : Business(addressLine1 == "" || addressLine1 == null)
+	then
+		$reason = new Reason("missing addressLine1", "validation error");
+		insert($reason);
+		System.out.println( "Empty business addressLine1 field error");
+end
+
+rule "Missing addressLine2"
+	ruleflow-group "validate"
+	dialect "mvel"
+	when
+		$business : Business( addressLine2 == "")
+	then
+		$responseCode = "validation error"; 
+		$reason = new Reason("Missing addressLine2", "validation error");
+		insert($reason);
+		System.out.println( "Empty business addressLine2 field error");
+end
+
+
+rule "Missing phoneNumber"
+	ruleflow-group "validate"
+	dialect "mvel"
+	when
+		$business : Business(phoneNumber == "" || phoneNumber == null)
+	then
+		$reason = new Reason("Missing phoneNumber", "validation error");
+		insert($reason);
+		System.out.println( "Empty business phoneNumber field error");
+end
+
+rule "Missing stateCode"
+	ruleflow-group "validate"
+	dialect "mvel"
+	when
+		$business : Business(stateCode == "" || stateCode == null)
+	then
+		$reason = new Reason("Missing stateCode", "validation error");
+		insert($reason);
+		System.out.println( "Empty business stateCode field error");
+end
+
+rule "Missing city"
+	ruleflow-group "validate"
+	dialect "mvel"
+	when
+		$business : Business( city == "" || city == null)
+	then
+		$reason = new Reason("Missing city", "validation error");
+		insert($reason);
+		System.out.println( "Empty business city field error");
+end
+
+rule "Missing zipCode field for Business"
+	ruleflow-group "validate"
+	dialect "mvel"
+	when
+		$business : Business( zipCode == "" || zipCode == null)
+	then
+		$reason = new Reason("Missing zipCode", "validation error");
+		insert($reason);
+		System.out.println( "Empty business zipCode field error");
+end
+
+rule "Missing federalTaxId"
+	ruleflow-group "validate"
+	dialect "mvel"
+	when
+		$business : Business( federalTaxId == "" || federalTaxId == null)
+	then
+		$reason = new Reason("Missing federalTaxId", "validation error");
+		insert($reason);
+		System.out.println( "Empty business federalTaxId field error");
+end
+
+rule "Enrich"
+	ruleflow-group "enrich"
+	dialect "mvel"
+	when
+		$business: Business($federalTaxId : federalTaxId, $zipCode : zipCode)
+		$federalTaxId.length < 5
+	then
+		$business.setFederalTaxId($federalTaxId + "-" + $zipCode)
+		System.out.println("enriched")
+end
+
